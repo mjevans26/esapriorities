@@ -1,10 +1,10 @@
 #' Count number of unique value occurrences within categorical subsets.
 #' 
-#'@param dat A data frame
-#'@param x name of column to be counted as character string
-#'@param y name of column defining categories
-#'@return named list of counts of unique values of \code{x} within subsets defined by \code{y}
-#'@examples
+#' @param dat A data frame
+#' @param x name of column to be counted as character string
+#' @param y name of column defining categories
+#' @return named list of counts of unique values of \code{x} within subsets defined by \code{y}
+#' @examples
 #'summarize(data2, "Species", "Year")
 summarize <- function(dat, x, y) {
  with(dat, tapply(get(x), get(y), function(x) length(unique(x)), simplify = TRUE))

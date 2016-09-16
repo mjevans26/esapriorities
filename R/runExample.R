@@ -1,8 +1,8 @@
-#'Launch Shiny App to explore workplan data.
-#'
-#'@example
-#'runExample()
-#'@export
+#' Launch Shiny App to explore workplan data.
+#' 
+#' @export
+#' @examples
+#' runExample()
 runExample <- function() {
   appDir <- system.file("shiny-examples", "plan_explorer", package = "esapriorities")
   if (appDir == "") {

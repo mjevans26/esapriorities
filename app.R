@@ -1,14 +1,14 @@
 # load all dependencies and data
 library(shiny)
-library(esapriorities)
-# load("data/data.rda")
-# load("data/data_states.rda")
+load("data/data.rda")
+load("data/data_states.rda")
 
 # create summary tables for plotting timelines of reviews
 priority_timetable <- with(data, table(Timeframe, Priority))
 LPN_timetable <- with(data, table(Timeframe, LPN))
 
 ui <- fluidPage(
+  
   titlePanel("Workplan Explorer"),
   
   fluidRow(
