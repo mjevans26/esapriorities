@@ -1,6 +1,8 @@
 # load all dependencies and data
 library(shiny)
 library(esapriorities)
+data("data")
+data("data_states")
 # load("data/data.rda")
 # load("data/data_states.rda")
 
@@ -10,7 +12,6 @@ LPN_timetable <- with(data, table(Timeframe, LPN))
 
 ui <- fluidPage(
   titlePanel("Workplan Explorer"),
-  
   fluidRow(
     sidebarLayout(
       sidebarPanel(selectInput("scale", label = "Select a Priortization Scheme", choices = list("Priority", "LPN"), selected="Priority", multiple=FALSE)),
@@ -35,15 +36,26 @@ ui <- fluidPage(
 )
 
 server <- function(input, output) {
-  tab <- reactive({switch(input$scale, "Priority" = priority_timetable, "LPN" = LPN_timetable)
+  tab <- reactive({
+    switch(input$scale, 
+           "Priority" = priority_timetable, 
+           "LPN" = LPN_timetable)
   })
   
   output$timeline <- renderPlot({
-   matplot(tab(), lwd = 2, pch = 1, main = "Timeline of Species Reviews", ylab = "Number of Reviews", xlab = "Fiscal Year", xaxt = "n", col = 1:ncol(tab()))
+   matplot(tab(), 
+           lwd = 2, 
+           pch = 1, 
+           main = "Timeline of Species Reviews", 
+           ylab = "Number of Reviews", 
+           xlab = "Fiscal Year", 
+           xaxt = "n", 
+           col = 1:ncol(tab()))
    matlines(tab(), lty = 1, lwd = 2)
    axis(side = 1, at = 1:nrow(tab()), labels = rownames(tab()))
    legend(x = "topright", title = input$scale, legend = c(colnames(tab())), lty = 1, lwd = 2, col = 1:ncol(tab()))
   })
+
   output$dtable <- renderDataTable({data[,c(2,3,4,6,7,8,9,10)]})
 }
 

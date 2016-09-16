@@ -4,9 +4,9 @@
 #' @examples
 #' runExample()
 runExample <- function() {
-  appDir <- system.file("shiny-examples", "plan_explorer", package = "esapriorities")
+  appDir <- system.file("shiny-examples", package = "esapriorities")
   if (appDir == "") {
     stop("Could not find example directory. Try re-installing 'mypackage'.", call. = FALSE)
   }
-  shiny::runAPP(appDir, display.mode = "normal")
+  shiny::runApp(appDir, display.mode = "normal")
 }
