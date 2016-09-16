@@ -1,0 +1,15 @@
+Package: esapriorities
+Type: Package
+Title: An R Data Package for the Fish and Wildlife Service's National Listing Workplan
+Version: 1.0
+Date: 2016-09-14
+Author: Michael Evans
+Maintainer: Michael Evans <mevans@defenders.org>
+Description: To improve implementation of the Endangered Species Act, the U.S Fish and
+  Wildlife Service (FWS) develops a 7-year workplan to prioritize ESA listing and critical habitat decisions.
+  The data included in this package was created by extracting the tables from the National Listing Workplan
+  PDF found in the FWS Endangered Species Act Document Library \url{https://www.fws.gov/endangered/esa-library}.
+  The package contains a function to launch an interactive web app that can be used to explore this data.
+License: BSD_2_clause + file LICENSE
+RoxygenNote: 5.0.1
+Dependencies: shiny
