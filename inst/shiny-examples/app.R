@@ -1,8 +1,10 @@
 # load all dependencies and data
 library(shiny)
-load("data/data.rda")
-load("data/data_states.rda")
-
+library(esapriorities)
+#load("data/data.rda")
+#load("data/data_states.rda")
+data(data)
+data(data_states)
 # create summary tables for plotting timelines of reviews
 priority_timetable <- with(data, table(Timeframe, Priority))
 LPN_timetable <- with(data, table(Timeframe, LPN))
