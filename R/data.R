@@ -21,11 +21,11 @@
 #' }
 #' 
 #' @source \url{https://www.fws.gov/endangered/esa-library}
-"data"
+"data_clean"
 
 #' FWS data on 7yr ESA implementation plan 
 #'
-#'Data identical to \code{data}, with unnested lists of states for each species. 
+#'Data identical to \code{data_clean}, with unnested lists of states for each species. 
 #'Each record represents a single species by state combination.
 #'
 #'@format A data frame with 1120 rows and 12 variables

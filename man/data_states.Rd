@@ -26,7 +26,7 @@
 data_states
 }
 \description{
-Data identical to \code{data}, with unnested lists of states for each species. 
+Data identical to \code{data_clean}, with unnested lists of states for each species. 
 Each record represents a single species by state combination.
 }
 \keyword{datasets}
