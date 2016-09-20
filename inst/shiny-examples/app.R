@@ -8,8 +8,16 @@ data("data_states")
 # load("data/data_states.rda")
 
 # create summary tables for plotting timelines of reviews
-priority_timetable <- with(data, table(Timeframe, Priority))
-LPN_timetable <- with(data, table(Timeframe, LPN))
+priority_timetable <- as.data.frame(with(data, table(Timeframe, Priority)))
+priority_timetable$Species <- sapply(1:length(priority_timetable$Timeframe), function(x,y,z) z$Species.name[which(z$Timeframe == y[x,1] & z$Priority == y[x,2])], y = priority_timetable, z = data)
+priority_timetable$Text <- sapply(1:length(priority_timetable$Timeframe), function(x,y,z) paste(z$Species.name[which(z$Timeframe == y[x,1] & z$Priority == y[x,2])][1:5],collapse="<br>"), y = priority_timetable, z = data)
+priority_timetable$Text <- gsub("<br>NA", "", priority_timetable$Text)
+
+LPN_timetable <- as.data.frame(with(data, table(Timeframe, LPN)))
+LPN_timetable$Species <- sapply(1:length(LPN_timetable$Timeframe), function(x,y,z) z$Species.name[which(z$Timeframe == y[x,1] & z$Priority == y[x,2])], y = LPN_timetable, z = data)
+LPN_timetable$Text <- sapply(1:length(LPN_timetable$Timeframe), function(x,y,z) paste(z$Species.name[which(z$Timeframe == y[x,1] & z$Priority == y[x,2])][1:5],collapse="<br>"), y = LPN_timetable, z = data)
+LPN_timetable$Text <- gsub("<br>NA", "", LPN_timetable$Text)
+
 
 ui <- fluidPage(
   titlePanel("Workplan Explorer"),
@@ -21,10 +29,10 @@ ui <- fluidPage(
         mainPanel(p("The U.S. Fish and Wildlife Service (FWS) released a 7-year workplan used to prioritize ongoing
                   species status reviews. FWS uses two different prioritization schemes; a 1-5 priority bin for status 
                   reviews of non-candidate species, and the Listing Priority Number (LPN) for current candidate species. 
-                  Use the to see the timeline of species reviews by level of priority under each system. For more details on the
-                  7-year workplan, visit", a("https://www.fws.gov/endangered/improving_esa/listing_workplan.html")))
+                  Mouse over the interactive timeline to see a sample of species in scheduled for review in a given 
+                  fiscal year. For more details on the 7-year workplan, visit:", a("https://www.fws.gov/endangered/improving_esa/listing_workplan.html")))
       ),
-    plotOutput("timeline")
+    plotlyOutput("timeline")
     ),
     column(1, br())
   ),
@@ -51,24 +59,25 @@ server <- function(input, output) {
            "LPN" = LPN_timetable)
   })
   
-  output$timeline <- renderPlot({
-   matplot(tab(), 
-           lwd = 2, 
-           pch = 1, 
-           main = "Timeline of Species Reviews", 
-           ylab = "Number of Reviews", 
-           xlab = "Fiscal Year", 
-           xaxt = "n", 
-           col = 1:ncol(tab()))
-   matlines(tab(), lty = 1, lwd = 2)
-   axis(side = 1, at = 1:nrow(tab()), labels = rownames(tab()))
-   legend(x = "topright", title = input$scale, legend = c(colnames(tab())), lty = 1, lwd = 2, col = 1:ncol(tab()))
+  output$timeline <- renderPlotly({
+    gg<- ggplot(tab(),aes(x = Timeframe,
+                     y = Freq,
+                     group = get(input$scale),
+                     text = paste("<b>Species</b>: <br>",Text)))+
+           geom_point(aes(colour = factor(get(input$scale))))+
+           geom_line(aes(colour = factor(get(input$scale))))+
+           ggtitle("Timeline of Species Reviews")+
+           xlab("Fiscal year")+
+           ylab("Number of Species")+
+           scale_color_discrete(name = input$scale)
+    ggplotly(gg)
   })
 
   output$dtable <- renderDataTable({data[,c(2,3,4,6,7,8,9,10)]})
 }
 
 shinyApp(ui = ui, server = server)
+
 
 
 
