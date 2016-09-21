@@ -69,7 +69,13 @@ server <- function(input, output) {
            xlab("Fiscal year")+
            ylab("Number of Species")+
            scale_color_discrete(name = input$scale)
-    ggplotly(gg)
+    p <- plotly_build(gg)
+    for(i in 1:length(p$data)){
+      p$data[[i]]$text <- gsub("factor\\(get\\(input\\$scale\\)\\): .","",p$data[[i]]$text)
+      p$data[[i]]$text <- gsub("get\\(input\\$scale\\)","Priority",p$data[[i]]$text)
+      p$data[[i]]$text <- gsub("Freq","\\# of Species",p$data[[i]]$text)
+    }
+    p
   })
 
   output$dtable <- renderDataTable({data_clean[,c(2,3,4,6,7,8,9,10)]})
