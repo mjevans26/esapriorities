@@ -4,7 +4,7 @@
 #' @examples
 #' runExample()
 runExample <- function() {
-  appDir <- system.file("shiny-examples", package = "esapriorities")
+  appDir <- system.file("listing-workplan", package = "esapriorities")
   if (appDir == "") {
     stop("Could not find example directory. Try re-installing 'mypackage'.", call. = FALSE)
   }

@@ -1,6 +1,7 @@
 # load all dependencies and data
 library(shiny)
 library(esapriorities)
+library(highcharter)
 
 data("data_clean")
 data("data_states")
@@ -31,7 +32,7 @@ ui <- fluidPage(
                   Mouse over the interactive timeline to see a sample of species scheduled for review in a given 
                   fiscal year. For more details on the 7-year workplan, visit:", a("https://www.fws.gov/endangered/improving_esa/listing_workplan.html")))
       ),
-    plotlyOutput("timeline")
+    highchartOutput("timeline")
     ),
     column(1, br())
   ),
@@ -58,24 +59,17 @@ server <- function(input, output) {
            "LPN" = LPN_timetable)
   })
   
-  output$timeline <- renderPlotly({
-    gg<- ggplot(tab(),aes(x = Timeframe,
-                     y = Freq,
-                     group = get(input$scale),
-                     text = paste("<b>Species</b>: <br>",Text)))+
-           geom_point(aes(colour = factor(get(input$scale))))+
-           geom_line(aes(colour = factor(get(input$scale))))+
-           ggtitle("Timeline of Species Reviews")+
-           xlab("Fiscal year")+
-           ylab("Number of Species")+
-           scale_color_discrete(name = input$scale)
-    p <- plotly_build(gg)
-    for(i in 1:length(p$data)){
-      p$data[[i]]$text <- gsub("factor\\(get\\(input\\$scale\\)\\): .","",p$data[[i]]$text)
-      p$data[[i]]$text <- gsub("get\\(input\\$scale\\)","Priority",p$data[[i]]$text)
-      p$data[[i]]$text <- gsub("Freq","\\# of Species",p$data[[i]]$text)
-    }
-    p
+  output$timeline <- renderHighchart({
+    cht <- hchart(tab(), "line", x = Timeframe, y = Freq, group = tab()[[input$scale]])%>%
+      hc_tooltip(pointFormat = sprintf("%s: {point.%s}<br>
+                                  # Species: {point.y}<br>
+                                  <b>Species:<\b><br>
+                                  {point.Text}", input$scale, input$scale))%>%
+      hc_title(text = "Timeline of Species Reivews", align = "center")%>%
+      hc_xAxis(title = list(text = "Fiscal Year"))%>%
+      hc_yAxis(title = list(text = "Number of Species"))%>%
+      hc_legend(title = list(text = sprintf("%s<br><em>(click to hide)</em>",input$scale)), 
+                layout = "vertical", align = "right", verticalAlign = "top", y = 100)
   })
 
   output$dtable <- renderDataTable({data_clean[,c(2,3,4,6,7,8,9,10)]})
