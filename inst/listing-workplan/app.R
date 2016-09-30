@@ -50,11 +50,13 @@ ui <- fluidPage(
     ),
     column(3, conditionalPanel(condition = "input.scale == 'Priority'",
       h4("Priority Bin Definitions"),
-      tableOutput("btable"))
-    ),
+      tableOutput("btable"),
+      p("Detailed bin descriptions available at ", 
+        a(href= "https://www.fws.gov/endangered/improving_esa/listing_workplan_prioritization_methodology.html", "FWS workplan page."))
+    )),
     column(1, br())
   ),
-  
+
   
   fluidRow(
     column(1, br()),
@@ -107,10 +109,7 @@ server <- function(input, output) {
       )
   })
   
-#  observeEvent(input$scale=="LPN",{
-#    shinyjs::hide(id = "def")
-#  }) 
-  
+
   output$btable <- renderTable({bin_table
     }, rownames = FALSE, digits = 0, align = 'l')
   
