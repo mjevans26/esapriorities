@@ -1,0 +1,57 @@
+---
+title: "FWS 7 Year Workplan"
+author: "Michael Evans"
+date: "September 22, 2016"
+output: word_document
+always_allow_html: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(esapriorities)
+library(highcharter)
+data("data_clean")
+data_clean <- data_clean
+```
+
+## R Markdown
+The U.S. Fish and Wildlife Service (FWS) released a 7-year workplan used to prioritize ongoing species status reviews. FWS uses two different prioritization schemes; a 1-5 priority bin for status reviews of non-candidate species, and the Listing Priority Number (LPN) of current candidate species. Mouse over the interactive timeline to see a sample of species scheduled for review in a given fiscal year. For more details on the 7-year workplan, visit:", <https://www.fws.gov/endangered/improving_esa/listing_workplan.html>
+
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r prep, echo = FALSE}
+# create summary tables for plotting timelines of reviews
+priority_timetable <- as.data.frame(with(data_clean, table(Timeframe, Priority)))
+priority_timetable$Priority <- as.numeric(priority_timetable$Priority)
+priority_timetable$Species <- sapply(1:length(priority_timetable$Timeframe), function(x,y,z) z$Species.name[which(z$Timeframe == y[x,1] & z$Priority == y[x,2])], y = priority_timetable, z = data_clean)
+priority_timetable$Text <- sapply(1:length(priority_timetable$Timeframe), function(x,y,z) paste(z$Species.name[which(z$Timeframe == y[x,1] & z$Priority == y[x,2])][1:5],collapse="<br>"), y = priority_timetable, z = data_clean)
+priority_timetable$Text <- gsub("<br>NA", "", priority_timetable$Text)
+
+LPN_timetable <- as.data.frame(with(data_clean, table(Timeframe, LPN)))
+LPN_timetable$LPN <- as.numeric(as.character(LPN_timetable$LPN))
+LPN_timetable$Species <- sapply(1:length(LPN_timetable$Timeframe), function(x,y,z) z$Species.name[which(z$Timeframe == y[x,1] & z$LPN == y[x,2])], y = LPN_timetable, z = data_clean)
+LPN_timetable$Text <- sapply(1:length(LPN_timetable$Timeframe), function(x,y,z) paste(z$Species.name[which(z$Timeframe == y[x,1] & z$LPN == y[x,2])][1:5],collapse="<br>"), y = LPN_timetable, z = data_clean)
+LPN_timetable$Text <- gsub("<br>NA", "", LPN_timetable$Text)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r bin_timeline, echo=FALSE}
+hchart(priority_timetable, "line", x = Timeframe, y = Freq, group = Priority)%>%
+  hc_tooltip(pointFormat = "Priority: {point.Priority}<br>
+                            # Species: {point.y}<br>
+                            <b>Species:<\b><br>
+                            {point.Text}")%>%
+  hc_title(text = "Timeline of Species Reivews", align = "center")%>%
+  hc_xAxis(title = list(text = "Fiscal Year"))%>%
+  hc_yAxis(title = list(text = "Number of Species"))%>%
+  hc_legend(title = list(text = "Priority<br><em>(click to hide)</em>"), 
+            layout = "vertical", align = "right", verticalAlign = "top", y = 100)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
