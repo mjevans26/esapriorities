@@ -23,15 +23,29 @@ LPN_timetable$Text <- gsub("<br>NA", "", LPN_timetable$Text)
 # observe(print(names(LPN_timetable)))
 
 bin_table <- data.frame("Bin" = c(1, 2, 3, 4, 5),
-           "Description" = c("Highest Priority: Critically Imperiled", "Strong status data available", "New science underway", "Conservation efforts underway", "Limited Data"))
+                        "Description" = c("Highest Priority: Critically Imperiled", 
+                                          "Strong status data available", 
+                                          "New science underway", 
+                                          "Conservation efforts underway", 
+                                          "Limited Data"))
 
+defenders_cc <- function() {
+  x <- '<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
+  <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a>
+  <br />
+  This <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/InteractiveResource" rel="dct:type">work</span> 
+  by <a xmlns:cc="http://creativecommons.org/ns" href="http://defenders.org" property="cc:attributionName" rel="cc:attributionURL">Defenders of Wildlife</a> 
+  is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.'
+  return(x)
+}
 
 ui <- fluidPage(
   fluidRow(
     column(1, br()),
     column(1, 
            a(href = "http://www.defenders.org", 
-             imageOutput("defenders", height = NULL))),
+             imageOutput("defenders", height = NULL))
+    ),
     column(2, 
            br(),
            p(tags$b("Defenders of Wildlife"), 
@@ -96,10 +110,19 @@ ui <- fluidPage(
     dataTableOutput("dtable")
     ),
     column(1, br())
-  )
+  ),
+  br(), br(),
+  fluidRow(
+    column(3),
+    column(6,
+      div(HTML(defenders_cc()), style="text-align:center")
+    ),
+    column(3)
+  ),
+  br()
 )
 
-server <- function(input, output) {
+server <- function(input, output, session) {
   tab <- reactive({
     switch(input$scale, 
            "Priority" = priority_timetable, 
@@ -153,6 +176,17 @@ server <- function(input, output) {
     bin_table
     }, rownames = FALSE, digits = 0, align = 'l'
   )
+  
+  output$defenders <- renderImage({
+    width <- session$clientData$output_defenders_width
+    if (width > 100) {
+      width <- 100
+    }
+    list(src = "www/01_DOW_LOGO_COLOR_300-01.png",
+         contentType = "image/png",
+         alt = "Defenders of Wildlife",
+         width=width)
+  }, deleteFile=FALSE)
   
 }
 
