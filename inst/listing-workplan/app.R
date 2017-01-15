@@ -52,8 +52,8 @@ ui <- fluidPage(
              br(),
              tags$b("Center for Conservation Innovation"))
     ),
-    column(6, h1("Workplan Explorer", align="center")),
-    column(5, br())
+    column(6, h1("ESA Listing Workplan Explorer", align="center")),
+    column(3, br())
   ),
   fluidRow(
     column(1),
