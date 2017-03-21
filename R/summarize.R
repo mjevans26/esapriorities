@@ -7,7 +7,7 @@
 #' @examples
 #'summarize(data2, "Species", "Year")
 summarize <- function(dat, x, y) {
- with(dat, tapply(get(x), get(y), function(x) length(unique(x)), simplify = TRUE))
+  with(dat, tapply(get(x), get(y), function(x) length(unique(x)), simplify = TRUE))
 }
 
 
