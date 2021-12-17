@@ -20,9 +20,20 @@ LPN_timetable$Text <- sapply(1:length(LPN_timetable$Timeframe), function(x,y,z) 
 LPN_timetable$Text <- gsub("<br>NA", "", LPN_timetable$Text)
 
 ui <- fluidPage(
-  h1("Workplan Explorer", align="center"),
   fluidRow(
     column(1, br()),
+    column(1, 
+      a(href = "http://www.defenders.org", 
+        imageOutput("defenders", height = NULL))),
+    column(2, 
+      br(),
+      p(tags$b("Defenders of Wildlife"), 
+      br(),
+      tags$b("Center for Conservation Innovation"))
+    ),
+    column(6, h1("Workplan Explorer", align="center")),
+    column(5, br())),
+  fluidRow(
     column(10, 
       sidebarLayout(
         sidebarPanel(selectInput("scale", label = "Select a Priortization Scheme", choices = list("Priority Bins"="Priority", "Listing Priority Number"="LPN"), selected="Priority", multiple=FALSE)),
